@@ -40,6 +40,19 @@ public class EmployeeController {
         
 
     }
+    @RequestMapping(value = "/all", method = RequestMethod.GET)
+    public Callable<ResponseObject> findAllData() {
+        // non blocking
+        return new Callable<ResponseObject>() {
+            @Override
+            public ResponseObject call() throws Exception {
+                return empService.findByAllData();
+            }
+        };
+        
+        
+
+    }
 
     @RequestMapping(method = RequestMethod.POST)
     public Callable<ResponseObject> insert(@RequestBody Employee emp) {
@@ -73,4 +86,17 @@ public class EmployeeController {
         };
         
     }
+    
+    
+    @RequestMapping(method = RequestMethod.PUT)
+    public Callable<ResponseObject> update(@RequestBody Employee emp) {
+        return new Callable<ResponseObject>() {
+            @Override
+            public ResponseObject call() throws Exception {
+               return empService.update(emp);
+            }
+        };
+        
+    }
+    
 }

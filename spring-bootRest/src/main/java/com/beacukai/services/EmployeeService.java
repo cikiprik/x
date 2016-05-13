@@ -30,45 +30,54 @@ import org.springframework.stereotype.Service;
 @Service("empService")
 @Transactional
 public class EmployeeService {
+
     @Autowired
     private EmployeeRepo empRepo;
-    
+
     @Autowired
     private UsersRepo usrRepo;
-    
+
     @Autowired
     private LoginLogRepo logRepo;
-    
+
     private static final int PAGE_SIZE = 10;
-    
-    public ResponseObject insert(Employee emp){
-        return new ResponseObject(true,"Saved",new ResponseData(1,empRepo.save(emp)));
+
+    public ResponseObject insert(Employee emp) {
+        return new ResponseObject(true, "Saved", new ResponseData(1, empRepo.save(emp)));
     }
-    
-    public ResponseObject findAll(int page){
-        
+
+    public ResponseObject findAll(int page) {
+
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Users userLogin = usrRepo.findByEmail(user.getUsername());
         LoginLog log = logRepo.lastLog(userLogin.getId());
-        
-        if(TimeCalculation.diffHour(log.getLoginTime()) <= 0.001){
-        PageRequest pageRequest = new PageRequest(page - 1, PAGE_SIZE);
-        Collection<Employee> list = IteratorUtils.toList(empRepo.findAll(pageRequest).iterator());
-        return new ResponseObject(true, "Employee List", new ResponseData(list.size(), list));
-            
+
+        if (TimeCalculation.diffHour(log.getLoginTime()) <= 0.1) {
+            PageRequest pageRequest = new PageRequest(page - 1, PAGE_SIZE);
+            Collection<Employee> list = IteratorUtils.toList(empRepo.findAll(pageRequest).iterator());
+            return new ResponseObject(true, "Employee List", new ResponseData(list.size(), list));
+
         } else {
             return new ResponseObject(false, "Please Login", null);
         }
-        
-        
+
     }
-    public ResponseObject findByName(String name){
+
+    public ResponseObject findByName(String name) {
         Collection<Employee> list = IteratorUtils.toList(empRepo.findByName(name).iterator());
-        return new ResponseObject(true, "Employee List By Name", new ResponseData(list.size(),list));
+        return new ResponseObject(true, "Employee List By Name", new ResponseData(list.size(), list));
     }
-    
-    public ResponseObject findById(long id){
+
+    public ResponseObject findById(long id) {
         return new ResponseObject(true, "Get One Record", new ResponseData(id, empRepo.findOne(id)));
     }
     
+    public ResponseObject findByAllData() {
+         Collection<Employee> list = IteratorUtils.toList(empRepo.findAll().iterator());
+        return new ResponseObject(true, "Get One Record", new ResponseData(list.size(),list));
+    }
+
+    public ResponseObject update(Employee emp) {
+        return new ResponseObject(true, "Updated", new ResponseData(1, empRepo.save(emp)));
+    }
 }
