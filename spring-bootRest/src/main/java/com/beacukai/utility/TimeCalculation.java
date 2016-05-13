@@ -21,7 +21,7 @@ public class TimeCalculation {
     public static double diffHour(Date logDate){
         LocalDateTime dateTime1 = LocalDateTime.parse(fmt.format(logDate), formater);
         LocalDateTime dateTime2 = LocalDateTime.parse(fmt.format(new Date()), formater);
-        long diffMinutes = java.time.Duration.between(dateTime2, dateTime2).toMinutes();
+        long diffMinutes = java.time.Duration.between(dateTime1, dateTime2).toMinutes();
         return (double) diffMinutes / 60;
     }
 }
